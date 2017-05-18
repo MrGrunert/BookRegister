@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EfBook.Data\EfBook.Data.csproj" />
+    <ProjectReference Include="..\EfBook.Domain\EfBook.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,24 @@
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+<a asp-action="CreateAuthor">Create New</a>
+@*<br />
+<form asp-action="CreateAuthor">
+    <button type="submit" onclick="CreateAuthor" name="CreateAuthor">Add a book</button>
+</form>*@
+<br />
+<a asp-action="Details">Create New</a>
+@*<form asp-action="Details">
+    <button type="submit" onclick="ListBooksView" name="Details">List books</button>
+</form>*@
+<br />
+<form asp-action="UpdateBookView">
+    <button type="submit" onclick="UpdateBook" name="Update book">Update a Book</button>
+</form>
+<br />
+<form asp-action="DeleteBookView">
+    <button type="submit" onclick="DeleteBook" name="Delete book">Delete a Book</button>
+</form>

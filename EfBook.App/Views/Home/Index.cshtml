@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<br />
+<form asp-action="AddBookView">
+    <button type="submit" onclick="AddBookView" name="Add book">Add a book</button>
+</form>
+<br />
+<form asp-action="ListBooksView">
+    <button type="submit" onclick="ListBooksView" name="Search book">Search for a book</button>
+</form>
+<br />
+<form asp-action="UpdateBookView">
+    <button type="submit" onclick="UpdateBook" name="Update book">Update a Book</button>
+</form>
+<br />
+<form asp-action="DeleteBookView">
+    <button type="submit" onclick="DeleteBook" name="Delete book">Delete a Book</button>
+</form>

@@ -1,0 +1,24 @@
+
+@{
+    ViewData["Title"] = "AddBookView";
+}
+
+<h2>AddBookView</h2>
+
+<form asp-action="AddBook">
+    <h1>Add a new book</h1>
+    Title:<br>
+    <input type="text" name="Title"><br>
+    Author:<br>
+    <input type="text" name="Author"><br>
+    Relese year:<br>
+    <input type="text" name="ReleseYear"><br>
+    Number of Pages:<br>
+    <input type="text" name="Number of pages"><br>
+    Language:<br>
+    <input type="text" name="BookLanguage"><br>
+    Resume:<br>
+    <input type="text" name="Resume"><br>
+    <br/>
+    <button type="submit" onclick="AddBook" name="Add Book">Save book</button>
+</form>

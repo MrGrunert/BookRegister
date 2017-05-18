@@ -1,0 +1,88 @@
+@model EfBook.App.Models.CreateBookVM
+
+@{
+    ViewData["Title"] = "CreateBook";
+}
+
+<h2>CreateBook</h2>
+
+<form asp-action="CreateBook">
+    <div class="form-horizontal">
+        <h4>Book</h4>
+        <hr />
+        
+        
+        
+        
+        
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+      
+        <div class="form-group">
+            <label asp-for="ReleaseYear" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="ReleaseYear" class="form-control" />
+                <span asp-validation-for="ReleaseYear" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="NumberOfPages" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="NumberOfPages" class="form-control" />
+                <span asp-validation-for="NumberOfPages" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Title" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="BookLanguage" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="BookLanguage" class="form-control" />
+                <span asp-validation-for="BookLanguage" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Resume" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Resume" class="form-control" />
+                <span asp-validation-for="Resume" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group" hidden="">
+            <label asp-for="AuthorId" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="AuthorId" class="form-control" />
+                <span asp-validation-for="AuthorId" class="text-danger"></span>
+            </div>
+        </div>
+        
+        <ul>
+           @for (var i = 0; i < Model.Genres.Count; i++)
+           {
+               <li>
+                   <input type="checkbox" asp-for="@Model.Genres[i].IsChecked"/>
+                   <label asp-for="@Model.Genres[i].IsChecked" >@Model.Genres[i].Display</label>
+                   <input type="hidden" asp-for="@Model.Genres[i].PoopId" />
+                   <input type="hidden" asp-for="@Model.Genres[i].Display" />
+               </li>
+           }
+        </ul>
+        
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+        
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
