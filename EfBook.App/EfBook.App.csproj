@@ -27,11 +27,6 @@
     <ProjectReference Include="..\EfBook.Domain\EfBook.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\BookGenre\" />
-    <Folder Include="Views\Books\" />
-    <Folder Include="Views\Author\" />
-    <Folder Include="Views\Genre\" />
-    <Folder Include="Views\BookGenre\" />
     <Folder Include="Views\BA\" />
   </ItemGroup>
 
