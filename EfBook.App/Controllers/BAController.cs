@@ -9,6 +9,7 @@ using EfBook.Data;
 using EfBook.Domain;
 using Microsoft.EntityFrameworkCore;
 using Book = EfBook.Domain.Book;
+using System.Reflection;
 
 namespace EfBook.App.Controllers
 {
@@ -176,12 +177,24 @@ namespace EfBook.App.Controllers
         // POST: BA/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, Domain.Book collection)
         {
             try
             {
-                // TODO: Add delete logic here
+                using (var context = new BookContext())
+                {
+                    context.Database.ExecuteSqlCommand("DELETE FROM BookGenres");
+                    context.Database.ExecuteSqlCommand("DELETE FROM Genres");
+                    context.Database.ExecuteSqlCommand("DELETE FROM Books");
+                    context.Database.ExecuteSqlCommand("DELETE FROM Authors");
 
+                    //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('BookGenres', RESEED, 0)");
+                    //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('Genres', RESEED, 0)");
+                    //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('Books', RESEED, 0)");
+                    //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('DELETE FROM Authors', RESEED, 0)");
+
+                }
+                
                 return RedirectToAction("Index");
             }
             catch

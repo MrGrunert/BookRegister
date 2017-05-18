@@ -44,7 +44,7 @@ namespace Book.App
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/BA/Index");
             }
 
             app.UseStaticFiles();
