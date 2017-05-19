@@ -47,17 +47,21 @@ namespace EfBook.App.Controllers
         // POST: BA/CreateAuthor
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateAuthor(Author collection)
+        public ActionResult CreateAuthor(Author author)
         {
             try
             {
+                if (ModelState.IsValid)
+                {
+                    var context = new BookContext();
+                    context.Add(author);
+                    context.SaveChanges();
+                    int aId = context.Authors.Select(a => a.Id).Max();
 
-                var context = new BookContext();
-                context.Add(collection);
-                context.SaveChanges();
-                int aId = context.Authors.Select(a => a.Id).Max();
+                    return RedirectToAction("CreateBook", new { authorId = aId });
+                }
 
-                return RedirectToAction("CreateBook", new { authorId = aId });
+                return View(author);
             }
             catch
             {
@@ -71,7 +75,6 @@ namespace EfBook.App.Controllers
         // GET: BA/CreateBook
         public ActionResult CreateBook(int? authorId)
         {
-
             var context = new BookContext();
             var genres = context.Genres.Select(g => g).ToList();
             CreateBookVM createBook = new CreateBookVM
@@ -94,35 +97,41 @@ namespace EfBook.App.Controllers
         {
             try
             {
-                if (collection.Genres.FindAll(g => g.IsChecked).Count == 0)
+                if (ModelState.IsValid)
                 {
-                    return View(collection);
-                }
-
-                var context = new BookContext();
-                var newBook = new Domain.Book
-                {
-                    Title = collection.Title,
-                    ReleaseYear = collection.ReleaseYear,
-                    NumberOfPages = collection.NumberOfPages,
-                    BookLanguage = collection.BookLanguage,
-                    Resume = collection.Resume,
-                    AuthorId = collection.AuthorId
-                };
-                context.Add(newBook);
-                context.SaveChanges();
-                var newBookId = context.Books.Last().Id;
-
-                foreach (var item in collection.Genres)
-                {
-                    if (item.IsChecked)
+                    if (collection.Genres.FindAll(g => g.IsChecked).Count == 0)
                     {
-                        context.BookGenres.Add(new BookGenre(newBookId, item.PoopId));
+                        return View(collection);
                     }
-                }
-                context.SaveChanges();
 
-                return RedirectToAction("Index");
+                    var context = new BookContext();
+                    var newBook = new Domain.Book
+                    {
+                        Title = collection.Title,
+                        ReleaseYear = collection.ReleaseYear,
+                        NumberOfPages = collection.NumberOfPages,
+                        BookLanguage = collection.BookLanguage,
+                        Resume = collection.Resume,
+                        AuthorId = collection.AuthorId
+                    };
+                    context.Add(newBook);
+                    context.SaveChanges();
+                    var newBookId = context.Books.Last().Id;
+
+                    foreach (var item in collection.Genres)
+                    {
+                        if (item.IsChecked)
+                        {
+                            context.BookGenres.Add(new BookGenre(newBookId, item.PoopId));
+                        }
+                    }
+                    context.SaveChanges();
+
+                    return RedirectToAction("Index");
+                }
+
+                return View(collection);
+
             }
             catch (Exception e)
             {
@@ -160,7 +169,7 @@ namespace EfBook.App.Controllers
         public ActionResult Edit(int id)
         {
             var context = new BookContext();
-            var book = context.Books.Include(bg => bg.BookGenres).First(b => b.Id == id);
+            var book =  context.Books.Include(bg => bg.BookGenres).First(b => b.Id == id);
             var genres = context.Genres.Select(g => g).ToList();
             var bookVM = new CreateBookVM
             {
@@ -176,7 +185,7 @@ namespace EfBook.App.Controllers
             foreach (var genre in genres)
             {
                 var genreTypeModel = new GenreTypeModel(genre);
-
+                
                 if (!(book.BookGenres.FirstOrDefault(bg => bg.GenreId == genre.Id) is null))
                 {
                     genreTypeModel.IsChecked = true;
@@ -218,13 +227,13 @@ namespace EfBook.App.Controllers
                 var bookGenreToClear = context.BookGenres.Where(bg => bg.BookId == id);
                 context.BookGenres.RemoveRange(bookGenreToClear);
                 foreach (var item in collection.Genres)
-                {
+                {                    
                     if (item.IsChecked)
                     {
                         context.BookGenres.Add(new BookGenre(newBookId, item.PoopId));
                     }
                 }
-
+                
                 context.SaveChanges();
 
                 return RedirectToAction("Index");
@@ -284,9 +293,9 @@ namespace EfBook.App.Controllers
                 var context = new BookContext();
                 context.Books.Remove(book);
                 context.SaveChanges();
+                
 
-
-                return RedirectToAction("Index");
+                    return RedirectToAction("Index");
             }
             catch
             {

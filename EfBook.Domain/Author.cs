@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace EfBook.Domain
 {
@@ -17,8 +18,11 @@ namespace EfBook.Domain
         }
 
         public int Id { get; set; }
+        [Required]
         public string FirstName { get; set; }
+        [Required]
         public string LastName { get; set; }
+        [Required]
         public string Country { get; set; }
         public string FullNameAndCountry => $"{FirstName} {LastName} {Country}";
 
