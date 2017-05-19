@@ -204,15 +204,17 @@ namespace EfBook.App.Controllers
                 };
                 context.Update(newBook);
                 context.SaveChanges();
-                var newBookId = context.Books.Last().Id;
-
+                var newBookId = context.Books.LastOrDefault(nb => nb.Id == id).Id;
+                var bookGenreToClear = context.BookGenres.Where(bg => bg.BookId == id);
+                context.BookGenres.RemoveRange(bookGenreToClear);
                 foreach (var item in collection.Genres)
-                {
+                {                    
                     if (item.IsChecked)
                     {
-                        context.BookGenres.Add(new BookGenre(newBookId, item.PoopId));
+                             context.BookGenres.Add(new BookGenre(newBookId, item.PoopId));
                     }
                 }
+                
                 context.SaveChanges();
 
                 return RedirectToAction("Index");
@@ -253,29 +255,59 @@ namespace EfBook.App.Controllers
         // GET: BA/Delete/5
         public ActionResult Delete(int id)
         {
+            //var context = new BookContext();
+            //var book = context.Books.Include(bg => bg.BookGenres).First(b => b.Id == id);
+            //var genres = context.Genres.Select(g => g).ToList();
+            //var bookVM = new CreateBookVM
+            //{
+            //    Id = book.Id,
+            //    Title = book.Title,
+            //    ReleaseYear = book.ReleaseYear,
+            //    NumberOfPages = book.NumberOfPages,
+            //    BookLanguage = book.BookLanguage,
+            //    Resume = book.Resume,
+            //    AuthorId = book.AuthorId
+            //};
+
+            //foreach (var genre in genres)
+            //{
+            //    var genreTypeModel = new GenreTypeModel(genre);
+
+            //    if (!(book.BookGenres.FirstOrDefault(bg => bg.GenreId == genre.Id) is null))
+            //    {
+            //        genreTypeModel.IsChecked = true;
+            //    }
+            //    bookVM.Genres.Add(genreTypeModel);
+            //}
+
+
             return View();
         }
 
         // POST: BA/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, Domain.Book collection)
+        public ActionResult Delete(int id, CreateBookVM collection)
         {
             try
             {
-                using (var context = new BookContext())
-                {
-                    context.Database.ExecuteSqlCommand("DELETE FROM BookGenres");
-                    context.Database.ExecuteSqlCommand("DELETE FROM Genres");
-                    context.Database.ExecuteSqlCommand("DELETE FROM Books");
-                    context.Database.ExecuteSqlCommand("DELETE FROM Authors");
+                var context = new BookContext();
+                context.Remove(collection);
+                context.SaveChanges();
 
-                    //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('BookGenres', RESEED, 0)");
-                    //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('Genres', RESEED, 0)");
-                    //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('Books', RESEED, 0)");
-                    //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('DELETE FROM Authors', RESEED, 0)");
+                //using (var context = new BookContext())
+                //{
+                //    context.Database.ExecuteSqlCommand("DELETE FROM BookGenres");
+                //    context.Database.ExecuteSqlCommand("DELETE FROM Genres");
+                //    context.Database.ExecuteSqlCommand("DELETE FROM Books");
+                //    context.Database.ExecuteSqlCommand("DELETE FROM Authors");
 
-                }
+                //    //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('BookGenres', RESEED, 0)");
+                //    //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('Genres', RESEED, 0)");
+                //    //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('Books', RESEED, 0)");
+                //    //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('DELETE FROM Authors', RESEED, 0)");
+
+                //}
 
                 return RedirectToAction("Index");
             }

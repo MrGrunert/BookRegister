@@ -17,6 +17,7 @@ namespace EfBookConsoleApp
             AddGenre();
             AddBookGenre();
 
+            Console.WriteLine("Press any key to exit");
             Console.ReadKey();
         }
 
