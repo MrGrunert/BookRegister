@@ -155,9 +155,11 @@ namespace EfBook.App.Controllers
         public ActionResult Edit(int id)
         {
             var context = new BookContext();
-            var book =  context.Books.First(b => b.Id == id);
+            var book =  context.Books.Include(bg => bg.BookGenres).First(b => b.Id == id);
+            var genres = context.Genres.Select(g => g).ToList();
             var bookVM = new CreateBookVM
             {
+                Id = book.Id,
                 Title = book.Title,
                 ReleaseYear = book.ReleaseYear,
                 NumberOfPages = book.NumberOfPages,
@@ -165,6 +167,19 @@ namespace EfBook.App.Controllers
                 Resume = book.Resume,
                 AuthorId = book.AuthorId
             };
+
+            foreach (var genre in genres)
+            {
+                var genreTypeModel = new GenreTypeModel(genre);
+                
+                if (!(book.BookGenres.FirstOrDefault(bg => bg.GenreId == genre.Id) is null))
+                {
+                    genreTypeModel.IsChecked = true;
+                }
+                bookVM.Genres.Add(genreTypeModel);
+            }
+
+
             return View(bookVM);
         }
 
@@ -179,6 +194,7 @@ namespace EfBook.App.Controllers
                 var context = new BookContext();
                 var newBook = new Domain.Book
                 {
+                    Id = collection.Id,
                     Title = collection.Title,
                     ReleaseYear = collection.ReleaseYear,
                     NumberOfPages = collection.NumberOfPages,
@@ -186,7 +202,7 @@ namespace EfBook.App.Controllers
                     Resume = collection.Resume,
                     AuthorId = collection.AuthorId
                 };
-                context.Add(newBook);
+                context.Update(newBook);
                 context.SaveChanges();
                 var newBookId = context.Books.Last().Id;
 
@@ -207,10 +223,10 @@ namespace EfBook.App.Controllers
             }
         }
 
-        public ActionResult EditAuthor(int id)
+        public ActionResult EditAuthor(int AuthorId)
         {
             var context = new BookContext();
-            var author = context.Authors.First(a => a.Id == id);
+            var author = context.Authors.First(a => a.Id == AuthorId);
             return View(author);
         }
 
@@ -218,7 +234,7 @@ namespace EfBook.App.Controllers
         // POST: BA/EditAuthor/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditAuthor(int id, Author collection)
+        public ActionResult EditAuthor(int AuthorId, Author collection)
         {
             try
             {
