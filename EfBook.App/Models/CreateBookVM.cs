@@ -13,8 +13,8 @@ namespace EfBook.App.Models
         public string Resume { get; set; }
         public int AuthorId { get; set; }
 
-        public virtual Author Author { get; set; }
-        public virtual ICollection<BookGenre> BookGenres { get; set; }
+        public  Author Author { get; set; }
+        public  ICollection<BookGenre> BookGenres { get; set; }
 
 
         public List<GenreTypeModel> Genres { get; set; }
@@ -22,7 +22,7 @@ namespace EfBook.App.Models
         public CreateBookVM()
         {
             Genres = new List<GenreTypeModel>();
-            BookGenres = new List<BookGenre>();
+            //BookGenres = new List<BookGenre>();
         }
     }
 }

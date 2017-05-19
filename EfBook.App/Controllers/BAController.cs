@@ -154,18 +154,77 @@ namespace EfBook.App.Controllers
         // GET: BA/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var context = new BookContext();
+            var book =  context.Books.First(b => b.Id == id);
+            var bookVM = new CreateBookVM
+            {
+                Title = book.Title,
+                ReleaseYear = book.ReleaseYear,
+                NumberOfPages = book.NumberOfPages,
+                BookLanguage = book.BookLanguage,
+                Resume = book.Resume,
+                AuthorId = book.AuthorId
+            };
+            return View(bookVM);
         }
 
 
         // POST: BA/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Domain.Book collection)
+        public ActionResult Edit(int id, CreateBookVM collection)
         {
             try
             {
-                // TODO: Add update logic here
+                var context = new BookContext();
+                var newBook = new Domain.Book
+                {
+                    Title = collection.Title,
+                    ReleaseYear = collection.ReleaseYear,
+                    NumberOfPages = collection.NumberOfPages,
+                    BookLanguage = collection.BookLanguage,
+                    Resume = collection.Resume,
+                    AuthorId = collection.AuthorId
+                };
+                context.Add(newBook);
+                context.SaveChanges();
+                var newBookId = context.Books.Last().Id;
+
+                foreach (var item in collection.Genres)
+                {
+                    if (item.IsChecked)
+                    {
+                        context.BookGenres.Add(new BookGenre(newBookId, item.PoopId));
+                    }
+                }
+                context.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        public ActionResult EditAuthor(int id)
+        {
+            var context = new BookContext();
+            var author = context.Authors.First(a => a.Id == id);
+            return View(author);
+        }
+
+
+        // POST: BA/EditAuthor/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditAuthor(int id, Author collection)
+        {
+            try
+            {
+                var context = new BookContext();
+                context.Update(collection);
+                context.SaveChanges();
 
                 return RedirectToAction("Index");
             }
