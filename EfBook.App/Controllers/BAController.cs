@@ -51,6 +51,7 @@ namespace EfBook.App.Controllers
         {
             try
             {
+
                 var context = new BookContext();
                 context.Add(collection);
                 context.SaveChanges();
@@ -93,6 +94,11 @@ namespace EfBook.App.Controllers
         {
             try
             {
+                if (collection.Genres.FindAll(g => g.IsChecked).Count == 0)
+                {
+                    return View(collection);
+                }
+
                 var context = new BookContext();
                 var newBook = new Domain.Book
                 {
@@ -137,6 +143,7 @@ namespace EfBook.App.Controllers
         {
             try
             {
+
                 var context = new BookContext();
                 context.Add(collection);
                 context.SaveChanges();
@@ -149,13 +156,11 @@ namespace EfBook.App.Controllers
             }
         }
 
-
-
         // GET: BA/Edit/5
         public ActionResult Edit(int id)
         {
             var context = new BookContext();
-            var book =  context.Books.Include(bg => bg.BookGenres).First(b => b.Id == id);
+            var book = context.Books.Include(bg => bg.BookGenres).First(b => b.Id == id);
             var genres = context.Genres.Select(g => g).ToList();
             var bookVM = new CreateBookVM
             {
@@ -171,7 +176,7 @@ namespace EfBook.App.Controllers
             foreach (var genre in genres)
             {
                 var genreTypeModel = new GenreTypeModel(genre);
-                
+
                 if (!(book.BookGenres.FirstOrDefault(bg => bg.GenreId == genre.Id) is null))
                 {
                     genreTypeModel.IsChecked = true;
@@ -182,7 +187,6 @@ namespace EfBook.App.Controllers
 
             return View(bookVM);
         }
-
 
         // POST: BA/Edit/5
         [HttpPost]
@@ -214,13 +218,13 @@ namespace EfBook.App.Controllers
                 var bookGenreToClear = context.BookGenres.Where(bg => bg.BookId == id);
                 context.BookGenres.RemoveRange(bookGenreToClear);
                 foreach (var item in collection.Genres)
-                {                    
+                {
                     if (item.IsChecked)
                     {
                         context.BookGenres.Add(new BookGenre(newBookId, item.PoopId));
                     }
                 }
-                
+
                 context.SaveChanges();
 
                 return RedirectToAction("Index");
@@ -237,7 +241,6 @@ namespace EfBook.App.Controllers
             var author = context.Authors.First(a => a.Id == AuthorId);
             return View(author);
         }
-
 
         // POST: BA/EditAuthor/5
         [HttpPost]
@@ -261,59 +264,27 @@ namespace EfBook.App.Controllers
         // GET: BA/Delete/5
         public ActionResult Delete(int id)
         {
-            //var context = new BookContext();
-            //var book = context.Books.Include(bg => bg.BookGenres).First(b => b.Id == id);
-            //var genres = context.Genres.Select(g => g).ToList();
-            //var bookVM = new CreateBookVM
-            //{
-            //    Id = book.Id,
-            //    Title = book.Title,
-            //    ReleaseYear = book.ReleaseYear,
-            //    NumberOfPages = book.NumberOfPages,
-            //    BookLanguage = book.BookLanguage,
-            //    Resume = book.Resume,
-            //    AuthorId = book.AuthorId
-            //};
+            var context = new BookContext();
 
-            //foreach (var genre in genres)
-            //{
-            //    var genreTypeModel = new GenreTypeModel(genre);
+            var book = context.Books.Include(b => b.Author).Include(g => g.BookGenres).ThenInclude(bg => bg.Genre)
+                .FirstOrDefault(s => s.Id == id);
 
-            //    if (!(book.BookGenres.FirstOrDefault(bg => bg.GenreId == genre.Id) is null))
-            //    {
-            //        genreTypeModel.IsChecked = true;
-            //    }
-            //    bookVM.Genres.Add(genreTypeModel);
-            //}
+            return View(book);
 
 
-            return View();
         }
 
         // POST: BA/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, CreateBookVM collection)
+        public ActionResult Delete(int id, Domain.Book book)
         {
             try
             {
                 var context = new BookContext();
-                context.Remove(collection);
+                context.Books.Remove(book);
                 context.SaveChanges();
 
-                //using (var context = new BookContext())
-                //{
-                //    context.Database.ExecuteSqlCommand("DELETE FROM BookGenres");
-                //    context.Database.ExecuteSqlCommand("DELETE FROM Genres");
-                //    context.Database.ExecuteSqlCommand("DELETE FROM Books");
-                //    context.Database.ExecuteSqlCommand("DELETE FROM Authors");
-
-                //    //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('BookGenres', RESEED, 0)");
-                //    //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('Genres', RESEED, 0)");
-                //    //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('Books', RESEED, 0)");
-                //    //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('DELETE FROM Authors', RESEED, 0)");
-
-                //}
 
                 return RedirectToAction("Index");
             }
