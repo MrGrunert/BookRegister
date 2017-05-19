@@ -93,32 +93,32 @@ namespace EfBook.App.Controllers
         // POST: BA/CreateBook
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateBook(CreateBookVM collection)
+        public ActionResult CreateBook(CreateBookVM createBook)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (collection.Genres.FindAll(g => g.IsChecked).Count == 0)
+                    if (createBook.Genres.FindAll(g => g.IsChecked).Count == 0)
                     {
-                        return View(collection);
+                        return View(createBook);
                     }
 
                     var context = new BookContext();
                     var newBook = new Domain.Book
                     {
-                        Title = collection.Title,
-                        ReleaseYear = collection.ReleaseYear,
-                        NumberOfPages = collection.NumberOfPages,
-                        BookLanguage = collection.BookLanguage,
-                        Resume = collection.Resume,
-                        AuthorId = collection.AuthorId
+                        Title = createBook.Title,
+                        ReleaseYear = createBook.ReleaseYear,
+                        NumberOfPages = createBook.NumberOfPages,
+                        BookLanguage = createBook.BookLanguage,
+                        Resume = createBook.Resume,
+                        AuthorId = createBook.AuthorId
                     };
                     context.Add(newBook);
                     context.SaveChanges();
                     var newBookId = context.Books.Last().Id;
 
-                    foreach (var item in collection.Genres)
+                    foreach (var item in createBook.Genres)
                     {
                         if (item.IsChecked)
                         {
@@ -130,7 +130,7 @@ namespace EfBook.App.Controllers
                     return RedirectToAction("Index");
                 }
 
-                return View(collection);
+                return View(createBook);
 
             }
             catch (Exception e)
@@ -148,13 +148,13 @@ namespace EfBook.App.Controllers
         // POST: BA/CreateBook
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateGenre(Genre collection)
+        public ActionResult CreateGenre(Genre genre)
         {
             try
             {
 
                 var context = new BookContext();
-                context.Add(collection);
+                context.Add(genre);
                 context.SaveChanges();
 
                 return RedirectToAction("Index");
@@ -200,33 +200,33 @@ namespace EfBook.App.Controllers
         // POST: BA/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, CreateBookVM collection)
+        public ActionResult Edit(int id, CreateBookVM editBook)
         {
             try
             {
-                if (collection.Genres.FindAll(g => g.IsChecked).Count == 0)
+                if (editBook.Genres.FindAll(g => g.IsChecked).Count == 0)
                 {
-                    return View(collection);
+                    return View(editBook);
                 }
 
 
                 var context = new BookContext();
                 var newBook = new Domain.Book
                 {
-                    Id = collection.Id,
-                    Title = collection.Title,
-                    ReleaseYear = collection.ReleaseYear,
-                    NumberOfPages = collection.NumberOfPages,
-                    BookLanguage = collection.BookLanguage,
-                    Resume = collection.Resume,
-                    AuthorId = collection.AuthorId
+                    Id = editBook.Id,
+                    Title = editBook.Title,
+                    ReleaseYear = editBook.ReleaseYear,
+                    NumberOfPages = editBook.NumberOfPages,
+                    BookLanguage = editBook.BookLanguage,
+                    Resume = editBook.Resume,
+                    AuthorId = editBook.AuthorId
                 };
                 context.Update(newBook);
                 context.SaveChanges();
                 var newBookId = context.Books.LastOrDefault(nb => nb.Id == id).Id;
                 var bookGenreToClear = context.BookGenres.Where(bg => bg.BookId == id);
                 context.BookGenres.RemoveRange(bookGenreToClear);
-                foreach (var item in collection.Genres)
+                foreach (var item in editBook.Genres)
                 {                    
                     if (item.IsChecked)
                     {
@@ -254,12 +254,12 @@ namespace EfBook.App.Controllers
         // POST: BA/EditAuthor/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditAuthor(int AuthorId, Author collection)
+        public ActionResult EditAuthor(int AuthorId, Author author)
         {
             try
             {
                 var context = new BookContext();
-                context.Update(collection);
+                context.Update(author);
                 context.SaveChanges();
 
                 return RedirectToAction("Index");
