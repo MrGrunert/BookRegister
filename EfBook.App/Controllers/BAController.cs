@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using EfBook.Data;
 using EfBook.Domain;
 using Microsoft.EntityFrameworkCore;
-using Book = EfBook.Domain.Book;
 using System.Reflection;
 
 namespace EfBook.App.Controllers
@@ -26,14 +25,22 @@ namespace EfBook.App.Controllers
         {
             var context = new BookContext();
 
+            var books = context.Books.Include(b => b.Author).Include(g => g.BookGenres).ThenInclude(bg => bg.Genre)
+                .Select(s => s).ToList();
+            List<BookVM> bookVms = new List<BookVM>();
 
-            return View(context.Books.Include(b => b.Author).Select(s => s).ToList());
+            foreach (var book in books)
+            {
+                bookVms.Add(new BookVM(book));
+            }
+
+            return View(bookVms);
         }
 
         // GET: BA/CreateAuthor
         public ActionResult CreateAuthor()
         {
-            
+
             return View();
         }
 
@@ -49,7 +56,7 @@ namespace EfBook.App.Controllers
                 context.SaveChanges();
                 int aId = context.Authors.Select(a => a.Id).Max();
 
-                return RedirectToAction("CreateBook",new{ authorId = aId});
+                return RedirectToAction("CreateBook", new { authorId = aId });
             }
             catch
             {
@@ -63,12 +70,12 @@ namespace EfBook.App.Controllers
         // GET: BA/CreateBook
         public ActionResult CreateBook(int? authorId)
         {
-          
+
             var context = new BookContext();
             var genres = context.Genres.Select(g => g).ToList();
             CreateBookVM createBook = new CreateBookVM
             {
-                AuthorId = authorId.Value               
+                AuthorId = authorId.Value
             };
 
             foreach (var genre in genres)
@@ -87,7 +94,7 @@ namespace EfBook.App.Controllers
             try
             {
                 var context = new BookContext();
-                Domain.Book newBook = new Domain.Book
+                var newBook = new Domain.Book
                 {
                     Title = collection.Title,
                     ReleaseYear = collection.ReleaseYear,
@@ -111,7 +118,7 @@ namespace EfBook.App.Controllers
 
                 return RedirectToAction("Index");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e);
                 return View();
@@ -154,7 +161,7 @@ namespace EfBook.App.Controllers
         // POST: BA/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Domain.Book collection)
         {
             try
             {
@@ -194,7 +201,7 @@ namespace EfBook.App.Controllers
                     //context.Database.ExecuteSqlCommand("DBCC CHECKIDENT('DELETE FROM Authors', RESEED, 0)");
 
                 }
-                
+
                 return RedirectToAction("Index");
             }
             catch

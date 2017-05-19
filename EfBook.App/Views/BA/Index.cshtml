@@ -12,12 +12,13 @@
 <br />
 <a asp-action="Details">View list of books</a>
 @*<form asp-action="Details">
-    <button type="submit" onclick="ListBooksView" name="Details">List books</button>
+    <button type="submit" onclick="Details" name="Details">List books</button>
 </form>*@
 <br />
-<form asp-action="UpdateBookView">
-    <button type="submit" onclick="UpdateBook" name="Update book">Update a Book</button>
-</form>
+<a asp-action="Edit">Edit</a>
+@*<form asp-action="Edit">
+    <button type="submit" onclick="Edit" name="Update book">Update a Book</button>
+</form>*@
 <br />
 <a asp-action="Delete">Delete a book</a>
 @*<form asp-action="Delete">
