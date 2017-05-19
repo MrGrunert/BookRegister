@@ -191,6 +191,12 @@ namespace EfBook.App.Controllers
         {
             try
             {
+                if (collection.Genres.FindAll(g => g.IsChecked).Count == 0)
+                {
+                    return View(collection);
+                }
+
+
                 var context = new BookContext();
                 var newBook = new Domain.Book
                 {
@@ -211,7 +217,7 @@ namespace EfBook.App.Controllers
                 {                    
                     if (item.IsChecked)
                     {
-                             context.BookGenres.Add(new BookGenre(newBookId, item.PoopId));
+                        context.BookGenres.Add(new BookGenre(newBookId, item.PoopId));
                     }
                 }
                 
