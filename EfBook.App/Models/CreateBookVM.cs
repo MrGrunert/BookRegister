@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using EfBook.Domain;
 
@@ -8,8 +9,10 @@ namespace EfBook.App.Models
     {
         public int Id { get; set; }
         [Required]
+        [Range(450, 2030)]
         public int ReleaseYear { get; set; }
         [Required]
+        [Range(1, 3000)]
         public int NumberOfPages { get; set; }
         [Required]
         public string Title { get; set; }
