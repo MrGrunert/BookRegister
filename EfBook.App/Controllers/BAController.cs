@@ -70,8 +70,6 @@ namespace EfBook.App.Controllers
         }
 
 
-
-
         // GET: BA/CreateBook
         public ActionResult CreateBook(int? authorId)
         {
@@ -159,7 +157,7 @@ namespace EfBook.App.Controllers
 
                 return RedirectToAction("Index");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return View();
             }

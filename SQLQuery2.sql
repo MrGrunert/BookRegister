@@ -1,4 +1,0 @@
-﻿SELECT * FROM Books
-SELECT * FROM Authors
-SELECT * FROM Genres
-SELECT * FROM BookGenres
